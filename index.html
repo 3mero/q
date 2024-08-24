@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض صفحات القرآن</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        #title-input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 1em;
+            width: 60%;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .quran-page {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .quran-page img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+            background-color: white;
+        }
+
+        .read-button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .read-button:hover {
+            background-color: #218838;
+        }
+
+        .read {
+            opacity: 0.6;
+        }
+
+        footer {
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer input, footer button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1em;
+        }
+
+        footer button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        footer button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="page-title">عرض صفحات القرآن</h1>
+        <input type="text" id="title-input" placeholder="أدخل عنوان الصفحة" oninput="updateTitle()">
+    </header>
+    
+    <main id="quran-pages-container">
+        <!-- الصفحات ستظهر هنا -->
+    </main>
+    
+    <footer>
+        <label for="page-count">عدد الصفحات:</label>
+        <input type="number" id="page-count" min="1" max="604" value="3">
+        <button onclick="generatePages()">عرض الصفحات</button>
+    </footer>
+
+    <script>
+        function updateTitle() {
+            const titleInput = document.getElementById('title-input').value;
+            const pageTitle = document.getElementById('page-title');
+            pageTitle.textContent = titleInput ? titleInput : 'عرض صفحات القرآن';
+        }
+
+        function generatePages() {
+            const pageCount = document.getElementById('page-count').value;
+            const container = document.getElementById('quran-pages-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= pageCount; i++) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'quran-page';
+
+                const img = document.createElement('img');
+                img.src = `https://3mero.github.io/q/Quran${i}.png`;
+                img.alt = `صفحة ${i}`;
+
+                const button = document.createElement('button');
+                button.className = 'read-button';
+                button.textContent = 'تمت القراءة';
+                button.onclick = () => {
+                    img.classList.toggle('read');
+                };
+
+                pageDiv.appendChild(img);
+                pageDiv.appendChild(button);
+                container.appendChild(pageDiv);
+            }
+        }
+    </script>
+</body>
+</html>
