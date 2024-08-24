@@ -18,70 +18,105 @@
             padding: 20px;
             background-color: #343a40;
             color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
         h1 {
             margin: 0;
-            font-size: 2em;
+            font-size: 2.5em;
+            text-align: center;
         }
 
         #title-input {
-            margin-top: 10px;
+            margin-top: 15px;
             padding: 10px;
-            font-size: 1em;
-            width: 60%;
+            font-size: 1.2em;
+            width: 80%;
+            max-width: 600px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
         }
 
         main {
             padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
         }
 
         .quran-page {
-            margin-bottom: 20px;
+            max-width: 45%;
+            flex: 1;
             position: relative;
+            margin-bottom: 20px;
         }
 
         .quran-page img {
-            max-width: 100%;
+            width: 100%;
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 5px;
             background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s, transform 0.3s, filter 0.3s;
+        }
+
+        .read-checkbox {
+            display: none;
         }
 
         .read-button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
+            margin-top: 10px;
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            padding: 5px 10px;
             font-size: 1em;
+            display: inline-block;
+            transition: background-color 0.3s;
         }
 
         .read-button:hover {
             background-color: #218838;
         }
 
-        .read {
+        .read-checkbox:checked + img {
             opacity: 0.6;
+            transform: scale(0.95);
+            filter: grayscale(100%);
         }
+
 
         footer {
             padding: 20px;
             background-color: #343a40;
             color: white;
-            position: sticky;
-            bottom: 0;
-            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        footer input, footer button {
+        footer label {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        footer input {
             padding: 10px;
             margin: 5px;
             font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            width: 80%;
+            max-width: 200px;
         }
 
         footer button {
@@ -90,10 +125,48 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 1em;
+            width: 80%;
+            max-width: 200px;
         }
 
         footer button:hover {
             background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .quran-page {
+                max-width: 100%;
+            }
+
+            footer input,
+            footer button {
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            #title-input {
+                font-size: 1em;
+                width: 100%;
+            }
+
+            footer label,
+            footer input,
+            footer button {
+                font-size: 0.8em;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -110,7 +183,12 @@
     <footer>
         <label for="page-count">عدد الصفحات:</label>
         <input type="number" id="page-count" min="1" max="604" value="3">
+
+        <label for="start-page">بدء العرض من الصفحة رقم:</label>
+        <input type="number" id="start-page" min="1" max="604" value="1">
+
         <button onclick="generatePages()">عرض الصفحات</button>
+        <button onclick="exportPage()">تصدير كصفحة ويب HTML</button>
     </footer>
 
     <script>
@@ -121,29 +199,87 @@
         }
 
         function generatePages() {
-            const pageCount = document.getElementById('page-count').value;
+            const pageCount = parseInt(document.getElementById('page-count').value);
+            const startPage = parseInt(document.getElementById('start-page').value);
             const container = document.getElementById('quran-pages-container');
             container.innerHTML = '';
 
-            for (let i = 1; i <= pageCount; i++) {
+            for (let i = 0; i < pageCount; i++) {
+                const currentPage = startPage + i;
+                if (currentPage > 604) break;
+
                 const pageDiv = document.createElement('div');
                 pageDiv.className = 'quran-page';
 
-                const img = document.createElement('img');
-                img.src = `https://3mero.github.io/q/Quran${i}.png`;
-                img.alt = `صفحة ${i}`;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'read-checkbox';
+                checkbox.id = `read-checkbox-${currentPage}`;
 
-                const button = document.createElement('button');
-                button.className = 'read-button';
-                button.textContent = 'تمت القراءة';
-                button.onclick = () => {
-                    img.classList.toggle('read');
+                const img = document.createElement('img');
+                img.src = `https://3mero.github.io/q/Quran/${currentPage}.png`;
+                img.alt = `صفحة ${currentPage}`;
+
+                const label = document.createElement('label');
+                label.className = 'read-button';
+                label.htmlFor = `read-checkbox-${currentPage}`;
+                label.textContent = 'تمت القراءة';
+
+                const divider = document.createElement('hr');
+                divider.className = 'decorative-divider';
+
+                img.onerror = () => {
+                    img.alt = `تعذر تحميل صفحة ${currentPage}`;
                 };
 
+                pageDiv.appendChild(checkbox);
                 pageDiv.appendChild(img);
-                pageDiv.appendChild(button);
+                pageDiv.appendChild(label);
+                pageDiv.appendChild(divider);
                 container.appendChild(pageDiv);
             }
+        }
+
+        function exportPage() {
+            const title = document.getElementById('page-title').textContent;
+            const pagesHTML = document.getElementById('quran-pages-container').innerHTML;
+
+            const exportContent = `
+                <!DOCTYPE html>
+                <html lang="ar">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${title}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; direction: rtl; text-align: center; background-color: #f8f9fa; }
+                        h1 { font-size: 2em; margin: 20px 0; }
+                        .quran-page { margin-bottom: 20px; }
+                        .quran-page img { max-width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 5px; background-color: white; transition: opacity 0.3s, transform 0.3s, filter 0.3s; }
+                        .read-checkbox { display: none; }
+                        .read-button { margin-top: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 5px 10px; font-size: 1em; display: inline-block; transition: background-color 0.3s; }
+                        .read-button:hover { background-color: #218838; }
+                        .read-checkbox:checked + img { opacity: 0.6; transform: scale(0.95); filter: grayscale(100%); }
+                    </style>
+                </head>
+                <body>
+                    <h1>${title}</h1>
+                    <main>
+                        ${pagesHTML}
+                    </main>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([exportContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
