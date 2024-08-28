@@ -154,7 +154,7 @@
             let pageText = pageSelect.options[pageSelect.selectedIndex].text;
             let pageLink = pageSelect.value;
             let title = document.getElementById("title").value;
-            let message = `${title} | الصفحات: ${pageText} | الرابط: ${pageLink}`;
+            let message = `${title} ${pageText} | الرابط: ${pageLink}`;
             let whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             document.getElementById("whatsapp-link").href = whatsappLink;
 
