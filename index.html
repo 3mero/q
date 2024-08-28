@@ -7,22 +7,21 @@
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header>
-        <h1 id="page-title">عرض صفحات القرآن</h1>
-        <input type="text" id="title-input" placeholder="أدخل عنوان الصفحة" oninput="updateTitle()">
-    </header>
+<header>
+    <h1 id="page-title">عرض صفحات القرآن</h1>
+    <input type="text" id="title-input" placeholder="أدخل عنوان الصفحة" oninput="updateTitle()">
+    
+    <div id="color-buttons">
+        <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
+        <div class="color-option" data-color="#ffffff" style="background-color: #ffffff;"></div>
+    </div>
+</header>
+
     
     <main id="quran-page-container">
         <!-- الصفحة ستظهر هنا -->
     </main>
     
-<div id="color-buttons">
-                <div class="color-option" data-color="#1a1a1a" style="background-color: #1a1a1a;"></div>
-                <div class="color-option" data-color="#2c3e50" style="background-color: #2c3e50;"></div>
-                <div class="color-option" data-color="#34495e" style="background-color: #34495e;"></div>
-                <div class="color-option" data-color="#ffffff" style="background-color: #ffffff;"></div>
-</div>
-
 
     <footer>
         <label for="page-count">عدد الصفحات:</label>
