@@ -25,23 +25,23 @@ function showCurrentPage() {
         return; // عدم عرض أي محتوى إذا كانت القيم غير صحيحة
     }
 
-    if (currentPage > startPage + totalPages - 1 || currentPage > 604) {
-        container.innerHTML = '<p>تم الانتهاء من جميع الصفحات</p>';
+if (currentPage > startPage + totalPages - 1 || currentPage > 604) {
+    container.innerHTML = '<p class="finished-text">تم الانتهاء من جميع الصفحات</p>';
 
-        const backButton = document.createElement('button');
-        backButton.className = 'read-button';
-        backButton.textContent = 'العودة لأول صفحة';
-        backButton.onclick = resetToFirstPage;
+    const backButton = document.createElement('button');
+    backButton.className = 'read-button';
+    backButton.textContent = 'العودة لأول صفحة';
+    backButton.onclick = resetToFirstPage;
 
-        const shareButton = document.createElement('button');
-        shareButton.className = 'share-button';
-        shareButton.textContent = 'مشاركة عبر الواتساب';
-        shareButton.onclick = shareOnWhatsApp;
+    const shareButton = document.createElement('button');
+    shareButton.className = 'share-button';
+    shareButton.textContent = 'مشاركة عبر الواتساب';
+    shareButton.onclick = shareOnWhatsApp;
 
-        container.appendChild(backButton);
-        container.appendChild(shareButton);
-        return;
-    }
+    container.appendChild(backButton);
+    container.appendChild(shareButton);
+    return;
+}
 
     const pageDiv = document.createElement('div');
     pageDiv.className = 'quran-page';
@@ -122,22 +122,46 @@ function exportPage() {
                 .read-button:hover { background-color: #218838; }
                 .share-button { background-color: #25D366; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 10px 20px; font-size: 1em; display: inline-block; margin-top: 20px; }
                 .share-button:hover { background-color: #1ebd56; }
-                #color-options { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
-                .color-option { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; transition: transform 0.3s; }
-                .color-option:hover { transform: scale(1.1); }
+                
+                #color-buttons {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 15px;
+                }
+
+                .color-option {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    margin: 0 5px;
+                    transition: transform 0.3s;
+                }
+
+                .color-option:hover {
+                    transform: scale(1.1);
+                }
+
+                p.finished-text {
+                    color: #28a745; /* لون أخضر */
+                    font-size: 1.2em; /* تكبير حجم الخط */
+                    font-weight: bold;
+                }
             </style>
         </head>
         <body>
-            <h1>${title}</h1>
-            <div id="quran-page-container">
+            <header>
+                <h1>${title}</h1>
+                <div id="color-buttons">
+                    <div class="color-option" data-color="#1a1a1a" style="background-color: #1a1a1a;"></div>
+                    <div class="color-option" data-color="#2c3e50" style="background-color: #2c3e50;"></div>
+                    <div class="color-option" data-color="#34495e" style="background-color: #34495e;"></div>
+                    <div class="color-option" data-color="#ffffff" style="background-color: #ffffff;"></div>
+                </div>
+            </header>
+            <main id="quran-page-container">
                 ${document.getElementById('quran-page-container').innerHTML}
-            </div>
-            <div id="color-options">
-                <div class="color-option" data-color="#1a1a1a" style="background-color: #1a1a1a;"></div>
-                <div class="color-option" data-color="#2c3e50" style="background-color: #2c3e50;"></div>
-                <div class="color-option" data-color="#34495e" style="background-color: #34495e;"></div>
-                <div class="color-option" data-color="#ffffff" style="background-color: #ffffff;"></div>
-            </div>
+            </main>
             <script>
                 let currentPage = ${startPage};
                 let totalPages = ${totalPages};
@@ -183,7 +207,7 @@ function exportPage() {
                     container.innerHTML = '';
 
                     if (currentPage > startPage + totalPages - 1 || currentPage > 604) {
-                        container.innerHTML = '<p>تم الانتهاء من جميع الصفحات</p>';
+                        container.innerHTML = '<p class="finished-text">تم الانتهاء من جميع الصفحات</p>';
 
                         const backButton = document.createElement('button');
                         backButton.className = 'read-button';
