@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحة ويب احترافية</title>
+    <title>صفحات من القرآن الكريم</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -114,7 +114,7 @@
                         let link = `https://3mero.github.io/q/p/${i}-${end}`;
                         let option = document.createElement("option");
                         option.value = link;
-                        option.text = `الصفحة ${i} إلى ${end}`;
+                        option.text = ` ${i} إلى ${end}`;
                         document.getElementById("pages").appendChild(option);
                     }
                 </script>
@@ -141,7 +141,7 @@
         function toggleBackgroundColor() {
             let body = document.body;
             if (body.style.backgroundColor === 'white') {
-                body.style.backgroundColor = '#2f2f2f';  // اللون الداكن الرصاصي
+                body.style.backgroundColor = '#2f2f2f';
                 body.style.color = 'white';
             } else {
                 body.style.backgroundColor = 'white';
@@ -154,14 +154,6 @@
             let pageText = pageSelect.options[pageSelect.selectedIndex].text;
             let pageLink = pageSelect.value;
             let title = document.getElementById("title").value;
-            let message = `${title} ${pageText} | الرابط: ${pageLink}`;
-            let whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-            document.getElementById("whatsapp-link").href = whatsappLink;
-
-            saveLastShared(title, pageText, pageLink);
-        }
-
-        function saveLastShared(title, pageText, pageLink) {
             let now = new Date();
             let days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
             let dayName = days[now.getDay()];
@@ -176,12 +168,20 @@
                 second: '2-digit',
                 hour12: false
             });
+            let message = `${title} | اليوم: ${dayName} | التاريخ: ${formattedDate} | الساعة: ${formattedTime} | الصفحات: ${pageText} | الرابط: ${pageLink}`;
+            let whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            document.getElementById("whatsapp-link").href = whatsappLink;
+
+            saveLastShared(dayName, formattedDate, formattedTime, title, pageText, pageLink);
+        }
+
+        function saveLastShared(dayName, formattedDate, formattedTime, title, pageText, pageLink) {
             let lastShared = `
                 <div class="box"><span>اليوم:</span> ${dayName}</div>
                 <div class="box"><span>التاريخ:</span> ${formattedDate}</div>
-                <div class="box"><span>العنوان:</span> ${title}</div>
                 <div class="box"><span>الساعة:</span> ${formattedTime}</div>
-                <div class="box"><span>الشهر:</span> ${now.toLocaleString("ar-SA", { month: 'long' })}</div>
+                <div class="box"><span>العنوان:</span> ${title}</div>
+                <div class="box"><span>الصفحات:</span> ${pageText}</div>
                 <div class="box"><span>الرابط:</span> <a href="${pageLink}" target="_blank">${pageLink}</a></div>
             `;
             localStorage.setItem("lastShared", lastShared);
