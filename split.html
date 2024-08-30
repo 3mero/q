@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقسيم الصفحات المحسن</title>
+    <title>تقسيم الصفحات</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -240,7 +240,7 @@
     </button>
 
     <div class="container">
-        <h1>تقسيم صفحات المصحف</h1>
+        <h1>تقسيم الصفحات</h1>
 
         <div id="page-splitter">
             <div class="form-section">
@@ -260,7 +260,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="num-days">عدد الأيام (اختياري):</label>
+                    <label for="num-days">عدد الأيام (اذا لم يحدد اي عدد سيتم عرض 604 كامل المصحف):</label>
                     <input id="num-days" type="number" min="1">
                 </div>
 
@@ -277,10 +277,6 @@
 </select>
 
 
-                <div class="button-group">
-                    <button class="share-button" onclick="shareDates()">
-                        <i class="fab fa-whatsapp"></i> مشاركة عبر واتساب
-                    </button>
                     <button class="copy-button tooltip" onclick="copyDates()">
                         <i class="far fa-copy"></i> نسخ إلى الحافظة
                         <span class="tooltiptext" id="copyTooltip">انقر للنسخ</span>
@@ -341,13 +337,13 @@
 
         function shareDates() {
             const dropdown = document.getElementById('date-dropdown');
-            let allOptions = "تقسيم صفحات المصحف:\n\n";
+            let allOptions = "تقسيم الصفحات:\n\n";
 
             for (let i = 0; i < dropdown.options.length; i++) {
                 allOptions += dropdown.options[i].textContent + "\n";
             }
 
-            if (allOptions.trim() !== "تقسيم صفحات المصحف:") {
+            if (allOptions.trim() !== "تقسيم الصفحات:") {
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(allOptions)}`;
                 window.open(whatsappUrl, '_blank');
             } else {
@@ -357,13 +353,13 @@
 
 function copyDates() {
     const dropdown = document.getElementById('date-dropdown');
-    let allOptions = "تقسيم صفحات المصحف:\n\n";
+    let allOptions = "تقسيم الصفحات:\n\n";
 
     for (let i = 0; i < dropdown.options.length; i++) {
         allOptions += dropdown.options[i].textContent + "\n";
     }
 
-    if (allOptions.trim() !== "تقسيم صفحات المصحف:") {
+    if (allOptions.trim() !== "تقسيم الصفحات:") {
         // إنشاء عنصر textarea مؤقت
         const tempTextArea = document.createElement("textarea");
         tempTextArea.value = allOptions;
