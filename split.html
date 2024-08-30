@@ -161,7 +161,7 @@
 
         #date-dropdown {
             width: 100%;
-            height: 200px;
+            height: 300px;
             margin-bottom: 20px;
             border-radius: 5px;
             border: 1px solid #ddd;
@@ -171,6 +171,27 @@
             transition: background-color 0.3s, color 0.3s;
             user-select: text;
             cursor: text;
+            overflow-y: auto;
+            padding: 10px;
+            text-align: right;
+        }
+
+        .month-separator {
+            border-top: 1px solid var(--primary-color);
+            margin: 10px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .month-separator::before {
+            content: attr(data-month);
+            background-color: var(--bg-color);
+            padding: 0 10px;
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
         }
 
         .tooltip {
@@ -255,12 +276,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="start-date">تاريخ بدء العرض:</label>
+                    <label for="start-date">تاريخ البدء:</label>
                     <input id="start-date" type="date">
                 </div>
 
                 <div class="form-group">
-                    <label for="num-days">عدد الأيام (اذا لم يحدد اي عدد سيتم عرض 604 كامل المصحف):</label>
+                    <label for="num-days">عدد الأيام) في حال عدم التحديد سيتم عرض 604 صفحة لكامل المصحف)</label>
                     <input id="num-days" type="number" min="1">
                 </div>
 
@@ -272,10 +293,9 @@
             </div>
 
             <div id="results-section">
-<select id="date-dropdown" multiple size="10" style="user-select: text; cursor: text;">
-    <!-- سيتم إضافة الصفحات هنا -->
-</select>
-
+                <div id="date-dropdown">
+                    <!-- سيتم إضافة التواريخ هنا -->
+                </div>
 
                     <button class="copy-button tooltip" onclick="copyDates()">
                         <i class="far fa-copy"></i> نسخ إلى الحافظة
@@ -320,13 +340,21 @@
 
             let currentPage = startPage;
             let currentStartDate = new Date(startDate);
+            let currentMonth = '';
 
             for (let i = 0; i < numDays && currentPage <= totalPages; i++) {
                 const endPage = Math.min(currentPage + pagesPerDay - 1, totalPages);
-                const option = document.createElement('option');
-                option.value = `${currentPage}-${endPage}`;
-                option.textContent = `${currentStartDate.toLocaleDateString('ar-LY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}: الصفحات ${currentPage} - ${endPage}`;
-                dropdown.appendChild(option);
+                const dateString = currentStartDate.toLocaleDateString('ar-LY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const monthYear = currentStartDate.toLocaleDateString('ar-LY', { year: 'numeric', month: 'long' });
+
+                if (monthYear !== currentMonth) {
+                    if (currentMonth !== '') {
+                        dropdown.innerHTML += '<div class="month-separator" data-month="' + monthYear + '"></div>';
+                    }
+                    currentMonth = monthYear;
+                }
+
+                dropdown.innerHTML += `<div>${dateString}: الصفحات ${currentPage} - ${endPage}</div>`;
 
                 currentPage = endPage + 1;
                 currentStartDate.setDate(currentStartDate.getDate() + 1);
@@ -335,49 +363,55 @@
             resultsSection.style.display = 'block';
         }
 
-        function shareDates() {
+        function getFormattedText() {
             const dropdown = document.getElementById('date-dropdown');
-            let allOptions = "تقسيم الصفحات:\n\n";
+            let formattedText = "تقسيم الصفحات:\n\n";
+            let currentMonth = '';
 
-            for (let i = 0; i < dropdown.options.length; i++) {
-                allOptions += dropdown.options[i].textContent + "\n";
-            }
+            dropdown.childNodes.forEach((node) => {
+                if (node.className === 'month-separator') {
+                    formattedText += "\n" + "=".repeat(20) + "\n";
+                    formattedText += node.getAttribute('data-month') + "\n";
+                    formattedText += "=".repeat(20) + "\n\n";
+                } else if (node.textContent) {
+                    formattedText += node.textContent + "\n";
+                }
+            });
 
-            if (allOptions.trim() !== "تقسيم الصفحات:") {
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(allOptions)}`;
+            return formattedText;
+        }
+
+        function shareDates() {
+            const formattedText = getFormattedText();
+
+            if (formattedText.trim() !== "تقسيم الصفحات:") {
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(formattedText)}`;
                 window.open(whatsappUrl, '_blank');
             } else {
                 alert("لا يوجد بيانات لمشاركتها.");
             }
         }
 
-function copyDates() {
-    const dropdown = document.getElementById('date-dropdown');
-    let allOptions = "تقسيم الصفحات:\n\n";
+        function copyDates() {
+            const formattedText = getFormattedText();
 
-    for (let i = 0; i < dropdown.options.length; i++) {
-        allOptions += dropdown.options[i].textContent + "\n";
-    }
-
-    if (allOptions.trim() !== "تقسيم الصفحات:") {
-        // إنشاء عنصر textarea مؤقت
-        const tempTextArea = document.createElement("textarea");
-        tempTextArea.value = allOptions;
-        document.body.appendChild(tempTextArea);
-        tempTextArea.select();
-        try {
-            document.execCommand('copy');  // تنفيذ أمر النسخ
-            alert("تم النسخ بنجاح!");
-        } catch (err) {
-            console.error('حدث خطأ أثناء النسخ: ', err);
-            alert("حدث خطأ أثناء النسخ. يرجى المحاولة مرة أخرى.");
+            if (formattedText.trim() !== "تقسيم الصفحات :") {
+                const tempTextArea = document.createElement("textarea");
+                tempTextArea.value = formattedText;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert("تم النسخ بنجاح!");
+                } catch (err) {
+                    console.error('حدث خطأ أثناء النسخ: ', err);
+                    alert("حدث خطأ أثناء النسخ. يرجى المحاولة مرة أخرى.");
+                }
+                document.body.removeChild(tempTextArea);
+            } else {
+                alert("لا يوجد بيانات لنسخها.");
+            }
         }
-        document.body.removeChild(tempTextArea); // إزالة عنصر textarea المؤقت
-    } else {
-        alert("لا يوجد بيانات لنسخها.");
-    }
-}
-
     </script>
 </body>
 </html>
