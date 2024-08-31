@@ -112,10 +112,10 @@
                     for (let i = 1; i <= 604; i += 3) {
                         let end = i + 2;
                         if (end > 604) end = 604
-                        let link = `https://3mero.github.io/q/p/${i}-${end}`;
+                        let link = `https://3mero.github.io/q/p/${end}-${i}`;
                         let option = document.createElement("option");
                         option.value = link;
-                        option.text = `${end} إلى ${i}`;
+                        option.text = `${i} إلى ${end}`;
                         document.getElementById("pages").appendChild(option);
                     }
                 </script>
@@ -169,11 +169,16 @@
                 second: '2-digit',
                 hour12: false
             });
-            let message = `${title} | الصفحات: ${pageText} | الرابط: ${pageLink}`;
+            
+            // تعديل نص الصفحات لعكس الترتيب
+            let pageNumbers = pageText.split(" إلى ");
+            let reversedPageText = `${pageNumbers[0]} إلى ${pageNumbers[1]}`;
+            
+            let message = `${title} | الصفحات من ${reversedPageText} | الرابط: ${pageLink}`;
             let whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             document.getElementById("whatsapp-link").href = whatsappLink;
 
-            saveLastShared(dayName, formattedDate, formattedTime, title, pageText, pageLink);
+            saveLastShared(dayName, formattedDate, formattedTime, title, reversedPageText, pageLink);
         }
 
         function saveLastShared(dayName, formattedDate, formattedTime, title, pageText, pageLink) {
