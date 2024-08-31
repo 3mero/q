@@ -111,6 +111,7 @@
                 <script>
                     for (let i = 1; i <= 604; i += 3) {
                         let end = i + 2;
+                        if (end > 604) end = 604
                         let link = `https://3mero.github.io/q/p/${i}-${end}`;
                         let option = document.createElement("option");
                         option.value = link;
